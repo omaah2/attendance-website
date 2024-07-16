@@ -1,24 +1,72 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Header from "./Header";
+import Dashboard from "./Dashboard";
+import Settings from "./Settings";
+import Report from "./Report";
 
 function App() {
+  const [attendanceList, setAttendanceList] = useState([]);
+
+  useEffect(() => {
+    const storedAttendance =
+      JSON.parse(localStorage.getItem("attendanceList")) || [];
+    setAttendanceList(storedAttendance);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("attendanceList", JSON.stringify(attendanceList));
+  }, [attendanceList]);
+
+  const addAttendance = (name) => {
+    const newAttendance = {
+      id: Date.now(),
+      name,
+      time: new Date().toLocaleTimeString(),
+      status: "Present",
+      date: new Date().toISOString().split("T")[0],
+    };
+    setAttendanceList([...attendanceList, newAttendance]);
+  };
+
+  const toggleStatus = (id) => {
+    setAttendanceList(
+      attendanceList.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status: item.status === "Present" ? "Absent" : "Present",
+            }
+          : item
+      )
+    );
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="min-h-screen bg-gray-100 font-sans">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Dashboard
+                  attendanceList={attendanceList}
+                  addAttendance={addAttendance}
+                  toggleStatus={toggleStatus}
+                />
+              }
+            />
+            <Route path="/settings" element={<Settings />} />
+            <Route
+              path="/report"
+              element={<Report attendanceList={attendanceList} />}
+            />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
