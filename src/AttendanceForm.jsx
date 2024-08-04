@@ -1,14 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-function AttendanceForm({ addAttendance }) {
+function AttendanceForm({ addAttendance, editItem, editAttendance }) {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  useEffect(() => {
+    if (editItem) {
+      setName(editItem.name);
+      setPhoneNumber(editItem.phoneNumber);
+    }
+  }, [editItem]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name.trim() && phoneNumber.trim()) {
-      addAttendance({ name, phoneNumber });
+      if (editItem) {
+        editAttendance(editItem.id, name, phoneNumber);
+      } else {
+        addAttendance(name, phoneNumber);
+      }
       setName("");
       setPhoneNumber("");
     }
@@ -21,7 +32,7 @@ function AttendanceForm({ addAttendance }) {
       transition={{ type: "spring", stiffness: 300 }}
     >
       <h2 className="text-2xl font-semibold mb-4 text-primary">
-        Mark Attendance
+        {editItem ? "Edit Attendance" : "Mark Attendance"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -58,7 +69,7 @@ function AttendanceForm({ addAttendance }) {
           type="submit"
           className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition duration-200 animate__animated animate__pulse animate__infinite"
         >
-          Mark Present
+          {editItem ? "Update" : "Mark Present"}
         </button>
       </form>
     </motion.div>

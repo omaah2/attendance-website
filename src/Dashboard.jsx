@@ -10,30 +10,22 @@ function Dashboard({
   addAttendance,
   toggleStatus,
   togglePaidStatus,
+  editItem,
+  setEditItem,
+  editAttendance,
 }) {
   const downloadPDF = () => {
-    const doc = new jsPDF();
-    const table = document.getElementById("attendanceTable");
+    const input = document.getElementById("attendanceTable");
 
-    html2canvas(table).then((canvas) => {
+    html2canvas(input).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
-      const imgWidth = 190;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
+      const pdf = new jsPDF();
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      let position = 0;
-      doc.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position -= pageHeight;
-        doc.addPage();
-        doc.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
-      doc.save("attendance.pdf");
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("attendance.pdf");
     });
   };
 
@@ -43,7 +35,11 @@ function Dashboard({
         Attendance Dashboard
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <AttendanceForm addAttendance={addAttendance} />
+        <AttendanceForm
+          addAttendance={addAttendance}
+          editItem={editItem}
+          editAttendance={editAttendance}
+        />
         <Stats attendanceList={attendanceList} />
       </div>
       <div className="mt-8">
@@ -59,6 +55,7 @@ function Dashboard({
           attendanceList={attendanceList}
           toggleStatus={toggleStatus}
           togglePaidStatus={togglePaidStatus}
+          setEditItem={setEditItem}
         />
       </div>
     </div>

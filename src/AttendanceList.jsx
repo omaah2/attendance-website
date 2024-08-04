@@ -1,7 +1,12 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-function AttendanceList({ attendanceList, toggleStatus, togglePaidStatus }) {
+function AttendanceList({
+  attendanceList,
+  toggleStatus,
+  togglePaidStatus,
+  setEditItem,
+}) {
   return (
     <motion.div
       className="mt-12 bg-white shadow-lg rounded-lg overflow-hidden"
@@ -30,6 +35,9 @@ function AttendanceList({ attendanceList, toggleStatus, togglePaidStatus }) {
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Paid
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
               </th>
             </tr>
           </thead>
@@ -72,6 +80,14 @@ function AttendanceList({ attendanceList, toggleStatus, togglePaidStatus }) {
                         } transition-colors duration-200`}
                     >
                       {item.paid ? "Paid" : "Not Paid"}
+                    </button>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => setEditItem(item)}
+                      className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors duration-200"
+                    >
+                      Edit
                     </button>
                   </td>
                 </motion.tr>
