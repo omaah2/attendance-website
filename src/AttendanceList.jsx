@@ -1,3 +1,4 @@
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function AttendanceList({ attendanceList, toggleStatus, togglePaidStatus }) {
@@ -12,7 +13,7 @@ function AttendanceList({ attendanceList, toggleStatus, togglePaidStatus }) {
         Today's Attendance
       </h2>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full" id="attendanceTable">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

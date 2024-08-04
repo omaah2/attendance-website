@@ -1,6 +1,9 @@
+import React from "react";
 import AttendanceForm from "./AttendanceForm";
 import AttendanceList from "./AttendanceList";
 import Stats from "./Stats";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 function Dashboard({
   attendanceList,
@@ -8,25 +11,30 @@ function Dashboard({
   toggleStatus,
   togglePaidStatus,
 }) {
-  const downloadAttendance = () => {
-    const csvContent =
-      "data:text/csv;charset=utf-8," +
-      "Name,PhoneNumber,Time,Status,Paid,Date\n" +
-      attendanceList
-        .map(
-          (item) =>
-            `${item.name},${item.phoneNumber},${item.time},${item.status},${
-              item.paid ? "Paid" : "Not Paid"
-            },${item.date}`
-        )
-        .join("\n");
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    const table = document.getElementById("attendanceTable");
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "attendance.csv");
-    document.body.appendChild(link);
-    link.click();
+    html2canvas(table).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const imgWidth = 190;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+
+      let position = 0;
+      doc.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position -= pageHeight;
+        doc.addPage();
+        doc.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      doc.save("attendance.pdf");
+    });
   };
 
   return (
@@ -40,17 +48,19 @@ function Dashboard({
       </div>
       <div className="mt-8">
         <button
-          onClick={downloadAttendance}
+          onClick={downloadPDF}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Download Attendance
+          Download Attendance as PDF
         </button>
       </div>
-      <AttendanceList
-        attendanceList={attendanceList}
-        toggleStatus={toggleStatus}
-        togglePaidStatus={togglePaidStatus}
-      />
+      <div id="attendanceTable">
+        <AttendanceList
+          attendanceList={attendanceList}
+          toggleStatus={toggleStatus}
+          togglePaidStatus={togglePaidStatus}
+        />
+      </div>
     </div>
   );
 }
