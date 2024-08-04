@@ -1,7 +1,6 @@
-import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-function AttendanceList({ attendanceList, toggleStatus }) {
+function AttendanceList({ attendanceList, toggleStatus, togglePaidStatus }) {
   return (
     <motion.div
       className="mt-12 bg-white shadow-lg rounded-lg overflow-hidden"
@@ -20,10 +19,16 @@ function AttendanceList({ attendanceList, toggleStatus }) {
                 Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Phone Number
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Time
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Paid
               </th>
             </tr>
           </thead>
@@ -38,6 +43,9 @@ function AttendanceList({ attendanceList, toggleStatus }) {
                   transition={{ duration: 0.3 }}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.phoneNumber}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">{item.time}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
@@ -50,6 +58,19 @@ function AttendanceList({ attendanceList, toggleStatus }) {
                         } transition-colors duration-200`}
                     >
                       {item.status}
+                    </button>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => togglePaidStatus(item.id)}
+                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        ${
+                          item.paid
+                            ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                            : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                        } transition-colors duration-200`}
+                    >
+                      {item.paid ? "Paid" : "Not Paid"}
                     </button>
                   </td>
                 </motion.tr>

@@ -3,12 +3,14 @@ import { motion } from "framer-motion";
 
 function AttendanceForm({ addAttendance }) {
   const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (name.trim()) {
-      addAttendance(name);
+    if (name.trim() && phoneNumber.trim()) {
+      addAttendance({ name, phoneNumber });
       setName("");
+      setPhoneNumber("");
     }
   };
 
@@ -34,6 +36,21 @@ function AttendanceForm({ addAttendance }) {
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="phoneNumber"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Phone Number
+          </label>
+          <input
+            type="text"
+            id="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
           />
         </div>

@@ -1,15 +1,24 @@
-import React from "react";
 import AttendanceForm from "./AttendanceForm";
 import AttendanceList from "./AttendanceList";
 import Stats from "./Stats";
 
-function Dashboard({ attendanceList, addAttendance, toggleStatus }) {
+function Dashboard({
+  attendanceList,
+  addAttendance,
+  toggleStatus,
+  togglePaidStatus,
+}) {
   const downloadAttendance = () => {
     const csvContent =
       "data:text/csv;charset=utf-8," +
-      "Name,Time,Status,Date\n" +
+      "Name,PhoneNumber,Time,Status,Paid,Date\n" +
       attendanceList
-        .map((item) => `${item.name},${item.time},${item.status},${item.date}`)
+        .map(
+          (item) =>
+            `${item.name},${item.phoneNumber},${item.time},${item.status},${
+              item.paid ? "Paid" : "Not Paid"
+            },${item.date}`
+        )
         .join("\n");
 
     const encodedUri = encodeURI(csvContent);
@@ -40,6 +49,7 @@ function Dashboard({ attendanceList, addAttendance, toggleStatus }) {
       <AttendanceList
         attendanceList={attendanceList}
         toggleStatus={toggleStatus}
+        togglePaidStatus={togglePaidStatus}
       />
     </div>
   );

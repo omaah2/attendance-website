@@ -18,12 +18,14 @@ function App() {
     localStorage.setItem("attendanceList", JSON.stringify(attendanceList));
   }, [attendanceList]);
 
-  const addAttendance = (name) => {
+  const addAttendance = ({ name, phoneNumber }) => {
     const newAttendance = {
       id: Date.now(),
       name,
+      phoneNumber,
       time: new Date().toLocaleTimeString(),
       status: "Present",
+      paid: false,
       date: new Date().toISOString().split("T")[0],
     };
     setAttendanceList([...attendanceList, newAttendance]);
@@ -42,6 +44,14 @@ function App() {
     );
   };
 
+  const togglePaidStatus = (id) => {
+    setAttendanceList(
+      attendanceList.map((item) =>
+        item.id === id ? { ...item, paid: !item.paid } : item
+      )
+    );
+  };
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-100 font-sans">
@@ -55,6 +65,7 @@ function App() {
                   attendanceList={attendanceList}
                   addAttendance={addAttendance}
                   toggleStatus={toggleStatus}
+                  togglePaidStatus={togglePaidStatus}
                 />
               }
             />
